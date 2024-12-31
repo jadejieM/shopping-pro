@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Toast } from 'vant'
+import store from '@/store'
 // 创建 axios 实例，将来对创建出来的实例，进行自定义配置
 // 好处：不会污染原始的 axios 实例
 const instance = axios.create({
@@ -10,6 +11,7 @@ const instance = axios.create({
 })
 
 // 自定义配置 - 配置 请求/响应拦截器
+
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
@@ -20,6 +22,14 @@ instance.interceptors.request.use(function (config) {
     duration: 0, // 为 0 不会自动消失
     loadingType: 'spinner' // 配置loading图标
   })
+
+  // 只要有token，那么就在请求时携带，便于请求需要授权的接口
+  const token = store.getters.token
+  if (token) {
+    config.headers['Access-Token'] = token // 此处对带有特殊字符 - 的使用了对象的中括号语法
+    // 对待特殊字符的，必须中括号，然后使用
+    config.headers.platform = 'H5' // 此处对象不带特殊字符，直接 . 使用
+  }
   return config
 }, function (error) {
   // 对请求错误做些什么

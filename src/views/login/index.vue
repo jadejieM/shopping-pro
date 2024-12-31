@@ -118,7 +118,17 @@ export default {
       console.log(res)
       this.$store.commit('user/setUserInfo', res.data)
       this.$toast('登录成功')
-      this.$router.push('/')
+
+      // 进行判断，看地址栏是否有回跳地址
+      // 如果有 => 说明是其他页面拦截到登录页来的，需要回跳
+      // 如果没有 =>  正常去首页
+      const url = this.$route.query.backUrl || '/'
+
+      // 使用push会保留原来的登录页，此时点返回键会回到登录页
+      // this.$router.push(url)
+      // 解决方法：比如此处，将需要跳转到登录页，且登录后还需要回跳回去的页面的router跳转处的push改为replace
+      // replace在跳转时不会产生历史，等于将当前页面换为了另一个页面，而不是跳转到下一个页面，此时也就解决了问题
+      this.$router.replace(url)
     }
   },
   // 离开页面，清除倒计时

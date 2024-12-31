@@ -16,7 +16,16 @@ export default {
       state.userInfo = obj
       setInfo(obj)
     }
+
   },
-  actions: {},
+  actions: {
+    logout (context) {
+      // 1.个人信息要重置  调用传送个空对象即可
+      context.commit('setUserInfo', {})
+      // 2. 购物车信息要重置  需要跨模块调用 mutation   cart/setCartList
+      context.commit('cart/setCartList', [], { root: true })
+      // {root:true}表示开启全局模式
+    }
+  },
   getters: {}
 }
